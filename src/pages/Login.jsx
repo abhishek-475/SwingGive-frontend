@@ -2,34 +2,39 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import toast from "react-hot-toast";
-import { authService } from "../services";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { login } = useAuth();
   const navigate = useNavigate();
+    const location = useLocation();
 
+
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const data = await authService.login(email, password);
-
-      // save token
-      localStorage.setItem("token", data.token);
+      const user = await login(email, password);
 
       setLoading(false);
+
+      if (!user) return;
+
+      const role = user?.role;
+
       toast.success("Login successful!");
 
-      const role = data.user?.role;
-
+      // redirect logic
       if (role === "admin") {
-        navigate("/admin");
+        navigate("/admin", { replace: true });
       } else {
-        navigate("/dashboard");
+        navigate(from || "/dashboard", { replace: true });
       }
 
     } catch (err) {
@@ -37,7 +42,7 @@ const Login = () => {
       toast.error(err.response?.data?.message || "Login failed");
     }
   };
-
+   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
       <div className="max-w-md w-full space-y-8">

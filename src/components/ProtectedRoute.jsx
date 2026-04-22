@@ -7,20 +7,17 @@ const PrivateRoute = ({ children, adminOnly = false }) => {
   const { user, loading, token } = useAuth()
   const location = useLocation()
 
-  // ✅ 1. Show loader while auth is initializing
-  if (loading || !token) {
-    return <LoadingSpinner />
-  }
+  //  Show loader while auth is initializing
+  if (loading) {
+  return <LoadingSpinner />
+}
+  if (!token) {
+  return <Navigate to="/login" state={{ from: location }} replace />
+}
 
-  // ✅ 2. If not logged in → redirect to login
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />
-  }
-
-  // ✅ 3. Admin protection
-  if (adminOnly && user?.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />
-  }
+if (!user) {
+  return <LoadingSpinner />
+}
 
   return children
 }
