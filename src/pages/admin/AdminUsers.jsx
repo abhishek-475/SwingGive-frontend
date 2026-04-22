@@ -105,7 +105,7 @@ const AdminUsers = () => {
 
             <>
               {/* TABLE */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
